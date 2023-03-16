@@ -1,3 +1,3 @@
 <h1>PhotoCube</h1>
-Hi, here we are want to create bot for information our users about PhotoCube /n
+Hi, here we are want to create bot for information our users about PhotoCube <br>
 Wellcome!
