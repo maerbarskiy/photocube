@@ -1,7 +1,7 @@
 import logging
 
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from config import API_TOKEN, HELP_COMMAND
 # Настройка логгирования
 logging.basicConfig(level=logging.INFO)
@@ -16,7 +16,15 @@ kb = ReplyKeyboardMarkup(resize_keyboard=True,
 button_info = KeyboardButton('/info')
 button_help = KeyboardButton('/help')
 button_sticker = KeyboardButton('/sticker')
-kb.add(button_info).add(button_help).add(button_sticker)
+button_fiKb = KeyboardButton('/inline')
+kb.add(button_info).insert(button_help).add(button_sticker).insert(button_fiKb)
+# Инициализация Инлайн клавиатуры
+ikb = InlineKeyboardMarkup(row_width=2)
+ib1 = InlineKeyboardButton(text='Button 1',
+                           url='https://vk.com/maerbarskiy')
+ib2 = InlineKeyboardButton(text='Button 2',
+                           url='https://twitter.com/maerbarskiy')
+ikb.add(ib1).add(ib2)
 
 
 # Сообщение в терминале после запуска бота
@@ -27,9 +35,9 @@ async def on_startup(_):
 # Сообщение после команды /start
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    await message.answer('<a href="https://t.me/maer_news/64">Здарова</a>, '
-                         'я буду за тобой повторять', parse_mode='HTML',
-                         reply_markup=kb)
+    await bot.send_message(chat_id=message.from_user.id,
+                           text='Здарова, я всё за тобой повторю!',
+                           reply_markup=kb)
     await message.delete()
 
 
@@ -45,6 +53,12 @@ async def show_info(message: types.Message):
 async def help_command(message: types.Message):
     await message.answer(text=HELP_COMMAND)
     await message.delete()
+
+
+@dp.message_handler(commands=['inline'])
+async def get_inline(message: types.Message):
+    await message.answer(text='Выбери кнопку',
+                         reply_markup=ikb)
 
 
 @dp.message_handler(commands=['sticker'])
